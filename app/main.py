@@ -37,7 +37,7 @@ def health() -> dict:
 
 @app.get("/metrics")
 def metrics() -> dict:
-    return compute_metrics(store.all(), load_transaction_stats(settings.transaction_csv_path), settings).model_dump()
+    return compute_metrics(store.all(), load_transaction_stats(settings.transaction_csv_path), settings).dict()
 
 
 @app.get("/funnel")
@@ -47,7 +47,7 @@ def funnel() -> dict:
 
 @app.get("/events")
 def events(limit: int = Query(100, ge=1, le=1000)) -> dict:
-    return {"events": [event.model_dump() for event in store.all(limit=limit)]}
+    return {"events": [event.dict() for event in store.all(limit=limit)]}
 
 
 @app.get("/anomalies")

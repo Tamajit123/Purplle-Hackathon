@@ -104,9 +104,9 @@ webencodings==0.5.1
 websocket-client==1.4.2
 widgetsnbextension==4.0.3
 
-fastapi
-uvicorn
-pydantic
+fastapi==0.115.0
+pydantic==2.9.2
+uvicorn==0.30.6
 pandas
 openpyxl
 opencv-python-headless

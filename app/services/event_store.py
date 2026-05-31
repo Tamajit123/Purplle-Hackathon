@@ -16,7 +16,7 @@ class EventStore:
     def append(self, event: StoreEvent) -> StoreEvent:
         with self._lock:
             with self.path.open("a", encoding="utf-8") as f:
-                f.write(event.model_dump_json() + "\n")
+                f.write(event.json() + "\n")
         return event
 
     def append_many(self, events: list[StoreEvent]) -> int:
@@ -25,7 +25,7 @@ class EventStore:
         with self._lock:
             with self.path.open("a", encoding="utf-8") as f:
                 for event in events:
-                    f.write(event.model_dump_json() + "\n")
+                    f.write(event.json() + "\n")
         return len(events)
 
     def all(self, limit: int | None = None) -> list[StoreEvent]:
