@@ -1,0 +1,15 @@
+services:
+  store-intel:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      STORE_ID: ST1008
+      STORE_NAME: Brigade_Bangalore
+      EVENT_LOG_PATH: /app/data/events/events.jsonl
+      TRANSACTION_CSV_PATH: /app/data/transactions.csv
+    volumes:
+      - ./data:/app/data
+    command: >
+      sh -c "python scripts/seed_events.py --if-empty &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000"

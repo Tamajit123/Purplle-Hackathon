@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Purplle Store Intelligence</title>
+    <link rel="stylesheet" href="/dashboard/styles.css?v=20260531-pro" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-mark">
+          <span class="brand-dot"></span>
+          <div>
+            <strong>Purplle IQ</strong>
+            <small>Brigade Road</small>
+          </div>
+        </div>
+        <nav aria-label="Dashboard sections">
+          <a href="#overview" class="active">Overview</a>
+          <a href="#store-map">Store Map</a>
+          <a href="#retail">Retail Mix</a>
+          <a href="#events-section">Events</a>
+          <a href="#resources">Resources</a>
+        </nav>
+        <div class="side-status">
+          <span class="live-dot"></span>
+          Live event stream
+        </div>
+      </aside>
+
+      <main class="content">
+        <header class="hero" id="overview">
+          <div class="hero-copy">
+            <p class="eyebrow">AI store intelligence system</p>
+            <h1>Purplle Brigade Road command center</h1>
+            <p class="hero-text">
+              CCTV events, POS sales, store layout and evaluation readiness in one reviewer-friendly console.
+            </p>
+            <div class="hero-actions">
+              <button id="refresh" class="primary-action" type="button">Refresh intelligence</button>
+              <a href="/metrics" target="_blank" rel="noreferrer">Open Metrics API</a>
+            </div>
+          </div>
+          <div class="hero-panel">
+            <div class="signal-header">
+              <span>System confidence</span>
+              <strong id="confidence-score">--</strong>
+            </div>
+            <div class="radar">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="hero-stats">
+              <div><strong id="camera-count">--</strong><span>Cameras</span></div>
+              <div><strong id="event-count">--</strong><span>Events</span></div>
+              <div><strong id="resource-count">4</strong><span>Resources</span></div>
+            </div>
+          </div>
+        </header>
+
+        <section class="kpi-grid" id="metrics"></section>
+
+        <section class="main-grid">
+          <article class="panel xl">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Conversion journey</p>
+                <h2>Real-time funnel</h2>
+              </div>
+              <span class="pill" id="conversion-pill">--</span>
+            </div>
+            <div id="funnel" class="funnel"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Risk control</p>
+                <h2>Anomaly watch</h2>
+              </div>
+              <span class="pill warm" id="anomaly-count">--</span>
+            </div>
+            <div id="anomalies" class="anomalies"></div>
+          </article>
+        </section>
+
+        <section class="main-grid store-grid" id="store-map">
+          <article class="panel layout-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">XLSX store layout</p>
+                <h2>Zone intelligence map</h2>
+              </div>
+              <span class="pill">Beauty wall + checkout</span>
+            </div>
+            <div class="layout-frame">
+              <img id="layout-image" alt="Brigade Road store layout" />
+              <span class="scan-line"></span>
+              <span class="zone-pin entrance">Entrance</span>
+              <span class="zone-pin beauty">Makeup wall</span>
+              <span class="zone-pin checkout">Billing</span>
+            </div>
+          </article>
+
+          <article class="panel camera-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">CCTV zip</p>
+                <h2>Camera coverage</h2>
+              </div>
+            </div>
+            <div id="camera-grid" class="camera-grid"></div>
+          </article>
+        </section>
+
+        <section class="retail-grid" id="retail">
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">POS CSV</p>
+                <h2>Hourly sales rhythm</h2>
+              </div>
+            </div>
+            <div id="hourly-bars" class="hourly-bars"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Category demand</p>
+                <h2>Department mix</h2>
+              </div>
+            </div>
+            <div class="donut-wrap">
+              <div id="dept-donut" class="donut"></div>
+              <div id="dept-list" class="rank-list"></div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Beauty brands</p>
+                <h2>Top movers</h2>
+              </div>
+            </div>
+            <div id="brand-list" class="rank-list brand-list"></div>
+          </article>
+        </section>
+
+        <section class="main-grid" id="events-section">
+          <article class="panel xl">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Structured event stream</p>
+                <h2>Latest detections</h2>
+              </div>
+              <div class="segmented" role="tablist" aria-label="Event filter">
+                <button class="selected" data-filter="all" type="button">All</button>
+                <button data-filter="entry" type="button">Entry</button>
+                <button data-filter="checkout" type="button">Checkout</button>
+                <button data-filter="anomaly" type="button">Anomaly</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Type</th>
+                    <th>Camera</th>
+                    <th>Track</th>
+                    <th>Zone</th>
+                    <th>Confidence</th>
+                  </tr>
+                </thead>
+                <tbody id="events"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Acceptance gate</p>
+                <h2>Reviewer readiness</h2>
+              </div>
+            </div>
+            <div id="readiness" class="readiness"></div>
+          </article>
+        </section>
+
+        <section class="panel resource-panel" id="resources">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">Source utilization</p>
+              <h2>Every provided resource is wired in</h2>
+            </div>
+          </div>
+          <div id="resource-strip" class="resource-strip"></div>
+        </section>
+      </main>
+    </div>
+    <script src="/dashboard/app.js?v=20260531-pro"></script>
+  </body>
+</html>

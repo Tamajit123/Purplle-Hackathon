@@ -1,0 +1,38 @@
+.venv/
+.venv310/
+__pycache__/
+.pytest_cache/
+*.pyc
+data/events/*.jsonl
+data/cctv/
+*.log
+dashboard_smoke.png
+
+# Python
+.venv/
+.venv310/
+__pycache__/
+.pytest_cache/
+*.pyc
+
+# Generated data
+data/events/*.jsonl
+data/cctv/
+
+# Logs
+*.log
+
+# Screenshots
+dashboard_smoke.png
+dashboard_final_edge.png
+dashboard_professional_edge.png
+dashboard_professional_mobile.png
+
+# Temporary browser testing folders
+tmp-edge-desktop/
+tmp-edge-desktop-2/
+tmp-edge-desktop-3/
+tmp-edge-mobile/
+tmp-edge-mobile-2/
+tmp-edge-mobile-3/
+tmp-edge-mobile-4/
