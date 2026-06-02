@@ -1,11 +1,87 @@
 from __future__ import annotations
 
 import csv
+import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
 from app.core.models import EventType, StoreEvent
 from app.core.settings import Settings
+
+
+EVENT_TYPE_MAP = {
+    "entry": EventType.ENTRY,
+    "exit": EventType.EXIT,
+    "zone_entered": EventType.ZONE_ENTER,
+    "zone_enter": EventType.ZONE_ENTER,
+    "zone_exited": EventType.ZONE_EXIT,
+    "zone_exit": EventType.ZONE_EXIT,
+    "checkout": EventType.CHECKOUT,
+    "billing": EventType.CHECKOUT,
+    "anomaly": EventType.ANOMALY,
+}
+
+
+def _parse_ts(row: dict) -> datetime:
+    value = row.get("ts") or row.get("event_timestamp") or row.get("event_time")
+    if not value:
+        return datetime.now().replace(microsecond=0)
+    return datetime.fromisoformat(str(value).replace("Z", "+00:00")).replace(tzinfo=None)
+
+
+def _normalise_zone(row: dict) -> str | None:
+    zone = row.get("zone_id") or row.get("zone_name") or row.get("zone_type")
+    if not zone:
+        return None
+    zone_value = str(zone).strip().replace(" ", "_").lower()
+    if "shelf" in zone_value or "zone" in zone_value or zone_value.endswith("_z01"):
+        return "beauty_wall"
+    if "billing" in zone_value or "checkout" in zone_value:
+        return "billing_counter"
+    return zone_value
+
+
+def load_sample_events(settings: Settings, limit: int | None = None) -> list[StoreEvent]:
+    path = settings.sample_events_path
+    if not path.exists():
+        return []
+
+    events: list[StoreEvent] = []
+    with path.open("r", encoding="utf-8") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            mapped_type = EVENT_TYPE_MAP.get(str(row.get("event_type", "")).lower())
+            if not mapped_type:
+                continue
+
+            track_id = row.get("track_id") or row.get("id_token") or row.get("person_id") or f"sample_{len(events) + 1}"
+            confidence = row.get("confidence")
+            if confidence is None:
+                confidence = 0.69 if row.get("is_face_hidden") else 0.84
+
+            events.append(
+                StoreEvent(
+                    event_type=mapped_type,
+                    ts=_parse_ts(row),
+                    store_id=str(row.get("store_id") or row.get("store_code") or settings.store_id),
+                    camera_id=str(row.get("camera_id") or "sample_events"),
+                    track_id=str(track_id),
+                    zone_id=_normalise_zone(row),
+                    confidence=float(confidence),
+                    attributes={
+                        "source": path.name,
+                        "age_bucket": row.get("age_bucket"),
+                        "gender": row.get("gender") or row.get("gender_pred"),
+                        "group_id": row.get("group_id"),
+                        "role": row.get("zone_type"),
+                    },
+                )
+            )
+            if limit is not None and len(events) >= limit:
+                break
+    return events
 
 
 def generate_seed_events(settings: Settings, max_orders: int | None = None) -> list[StoreEvent]:
@@ -15,6 +91,10 @@ def generate_seed_events(settings: Settings, max_orders: int | None = None) -> l
     visitor and checkout pattern. It keeps docker-compose useful on machines where
     the 680 MB CCTV zip is still sitting in Downloads.
     """
+    sample_events = load_sample_events(settings, limit=max_orders)
+    if sample_events:
+        return sample_events
+
     path = settings.transaction_csv_path
     if not path.exists():
         now = datetime.now().replace(microsecond=0)

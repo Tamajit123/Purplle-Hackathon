@@ -7,6 +7,7 @@ class Settings:
     store_id: str = os.getenv("STORE_ID", "ST1008")
     store_name: str = os.getenv("STORE_NAME", "Brigade_Bangalore")
     event_log_path: Path = Path(os.getenv("EVENT_LOG_PATH", "data/events/events.jsonl"))
+    sample_events_path: Path = Path(os.getenv("SAMPLE_EVENTS_PATH", "data/sample_eventsbe42122.jsonl"))
     transaction_csv_path: Path = Path(os.getenv("TRANSACTION_CSV_PATH", "data/POS_transactions.csv"))
     store_data_root: Path = Path(os.getenv("STORE_DATA_ROOT", "data"))
     cctv_zip_path: Path = Path(

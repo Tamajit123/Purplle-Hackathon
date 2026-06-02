@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from app.core.models import EventType, StoreEvent
 from app.core.settings import Settings
 from app.services.analytics import compute_funnel, compute_metrics
+from app.services.seeding import load_sample_events
 from app.services.transactions import TransactionStats
 
 
@@ -45,3 +46,12 @@ def test_funnel_uses_detected_zone_and_pos_orders():
     assert funnel["stages"][1]["count"] == 1
     assert funnel["stages"][2]["count"] == 1
     assert funnel["evidence"]["pos_orders"] == 3
+
+
+def test_sample_events_file_normalizes_to_store_events():
+    events = load_sample_events(Settings(), limit=5)
+    assert len(events) == 5
+    assert events[0].event_type == EventType.ENTRY
+    assert events[0].track_id == "ID_60001"
+    assert events[4].event_type == EventType.ZONE_ENTER
+    assert events[4].zone_id == "beauty_wall"

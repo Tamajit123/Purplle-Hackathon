@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Purplle Store Intelligence</title>
-    <link rel="stylesheet" href="/dashboard/styles.css?v=20260531-pro" />
+    <link rel="stylesheet" href="/dashboard/styles.css?v=20260603-store2" />
   </head>
   <body>
     <div class="app-shell">
@@ -18,10 +18,10 @@
         </div>
         <nav aria-label="Dashboard sections">
           <a href="#overview" class="active">Overview</a>
-          <a href="#store-map">Store Map</a>
+          <a href="#store-map">Store Twin</a>
           <a href="#retail">Retail Mix</a>
           <a href="#events-section">Events</a>
-          <a href="#resources">Resources</a>
+          <a href="#operations">Operations</a>
         </nav>
         <div class="side-status">
           <span class="live-dot"></span>
@@ -33,13 +33,14 @@
         <header class="hero" id="overview">
           <div class="hero-copy">
             <p class="eyebrow">AI store intelligence system</p>
-            <h1>Purplle Brigade Road command center</h1>
+            <h1>Purplle multi-store command center</h1>
             <p class="hero-text">
-              CCTV events, POS sales, store layout and evaluation readiness in one reviewer-friendly console.
+              Store 1 and Store 2 layouts, CCTV coverage, POS sales and anomaly signals in one recruiter-ready control room.
             </p>
             <div class="hero-actions">
               <button id="refresh" class="primary-action" type="button">Refresh intelligence</button>
-              <a href="/metrics" target="_blank" rel="noreferrer">Open Metrics API</a>
+              <a href="/metrics" target="_blank" rel="noreferrer">Metrics API</a>
+              <a href="/events" target="_blank" rel="noreferrer">Events API</a>
             </div>
           </div>
           <div class="hero-panel">
@@ -90,10 +91,11 @@
           <article class="panel layout-panel">
             <div class="panel-heading">
               <div>
-                <p class="section-kicker">Store layout</p>
-                <h2>Zone intelligence map</h2>
+                <p class="section-kicker">Digital store twin</p>
+                <h2>Layout and zone intelligence</h2>
+                <span id="store-context" class="subline">Loading mapped store context</span>
               </div>
-              <span class="pill">Beauty wall + checkout</span>
+              <div id="store-toggle" class="segmented store-toggle" role="tablist" aria-label="Store selector"></div>
             </div>
             <div class="layout-frame">
               <img id="layout-image" alt="Brigade Road store layout" />
@@ -102,16 +104,43 @@
               <span class="zone-pin beauty">Makeup wall</span>
               <span class="zone-pin checkout">Billing</span>
             </div>
+            <div class="layout-meta">
+              <strong id="layout-caption">Mapped zones</strong>
+              <span id="store-pill" class="pill">--</span>
+            </div>
           </article>
 
           <article class="panel camera-panel">
             <div class="panel-heading">
               <div>
-                <p class="section-kicker">CCTV zip</p>
-                <h2>Camera coverage</h2>
+                <p class="section-kicker">CCTV coverage</p>
+                <h2 id="camera-title">Store coverage</h2>
               </div>
             </div>
             <div id="camera-grid" class="camera-grid"></div>
+          </article>
+        </section>
+
+        <section class="main-grid" id="operations">
+          <article class="panel xl">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Store comparison</p>
+                <h2>Two-store deployment view</h2>
+              </div>
+              <span class="pill">Toggle-ready assets</span>
+            </div>
+            <div id="store-comparison" class="store-comparison"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Operational health</p>
+                <h2>Live system checks</h2>
+              </div>
+            </div>
+            <div id="ops-health" class="ops-health"></div>
           </article>
         </section>
 
@@ -184,25 +213,15 @@
           <article class="panel">
             <div class="panel-heading">
               <div>
-                <p class="section-kicker">Acceptance gate</p>
-                <h2>Reviewer readiness</h2>
+                <p class="section-kicker">Scenario coverage</p>
+                <h2>What the system proves</h2>
               </div>
             </div>
-            <div id="readiness" class="readiness"></div>
+            <div id="scenario-coverage" class="scenario-coverage"></div>
           </article>
-        </section>
-
-        <section class="panel resource-panel" id="resources">
-          <div class="panel-heading">
-            <div>
-              <p class="section-kicker">Source utilization</p>
-              <h2>Every provided resource is wired in</h2>
-            </div>
-          </div>
-          <div id="resource-strip" class="resource-strip"></div>
         </section>
       </main>
     </div>
-    <script src="/dashboard/app.js?v=20260531-pro"></script>
+    <script src="/dashboard/app.js?v=20260603-store2"></script>
   </body>
 </html>

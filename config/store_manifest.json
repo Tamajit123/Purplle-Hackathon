@@ -1,0 +1,86 @@
+{
+  "stores": [
+    {
+      "id": "store_1",
+      "store": "Store 1",
+      "focus": "Primary Brigade Road validation store",
+      "layout_asset": "/dashboard/assets/stores/store_1/layout.png",
+      "zones": [
+        "entry_gate",
+        "beauty_wall",
+        "checkout_counter"
+      ],
+      "cameras": [
+        {
+          "camera_id": "STORE1_ENTRY_CAM",
+          "name": "Entry camera",
+          "role": "Entry",
+          "coverage": "Customer entry, exit and first-session timestamp capture",
+          "status": "ready"
+        },
+        {
+          "camera_id": "STORE1_BEAUTY_WALL",
+          "name": "Beauty wall camera",
+          "role": "Zone",
+          "coverage": "Makeup wall browsing, product interaction and dwell-time signals",
+          "status": "ready"
+        },
+        {
+          "camera_id": "STORE1_CHECKOUT",
+          "name": "Billing counter camera",
+          "role": "Checkout",
+          "coverage": "Queue formation, billed conversion and POS reconciliation",
+          "status": "ready"
+        },
+        {
+          "camera_id": "STORE1_AISLE",
+          "name": "Aisle camera",
+          "role": "Zone",
+          "coverage": "Secondary aisle movement and staff assistance visibility",
+          "status": "ready"
+        }
+      ]
+    },
+    {
+      "id": "store_2",
+      "store": "Store 2",
+      "focus": "Secondary store layout and camera coverage validation",
+      "layout_asset": "/dashboard/assets/stores/store_2/layout.png",
+      "zones": [
+        "entry_gate",
+        "billing_area",
+        "shopping_zone"
+      ],
+      "cameras": [
+        {
+          "camera_id": "STORE2_ENTRY_1",
+          "name": "Entry 1",
+          "role": "Entry",
+          "coverage": "Primary entrance angle and visitor counting",
+          "status": "ready"
+        },
+        {
+          "camera_id": "STORE2_ENTRY_2",
+          "name": "Entry 2",
+          "role": "Entry",
+          "coverage": "Secondary entrance angle and duplicate-track rejection",
+          "status": "ready"
+        },
+        {
+          "camera_id": "STORE2_BILLING_AREA",
+          "name": "Billing area",
+          "role": "Checkout",
+          "coverage": "Billing desk occupancy, queue length and order handoff",
+          "status": "ready"
+        },
+        {
+          "camera_id": "STORE2_ZONE",
+          "name": "Shopping zone",
+          "role": "Zone",
+          "coverage": "Category movement, dwell-time and assisted-selling signals",
+          "status": "ready"
+        }
+      ]
+    }
+  ]
+}

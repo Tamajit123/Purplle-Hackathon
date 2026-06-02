@@ -17,6 +17,7 @@ COPY scripts ./scripts
 COPY dashboard ./dashboard
 COPY config ./config
 COPY data/POS_transactions.csv ./data/POS_transactions.csv
+COPY data/sample_eventsbe42122.jsonl ./data/sample_eventsbe42122.jsonl
 COPY data/evaluation_framework.pdf ./data/evaluation_framework.pdf
 RUN mkdir -p ./data/events
 
