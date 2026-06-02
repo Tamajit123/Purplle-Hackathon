@@ -669,6 +669,11 @@ th {
   grid-template-columns: repeat(4, minmax(180px, 1fr));
 }
 
+.resource-stack {
+  display: grid;
+  gap: 10px;
+}
+
 .resource-item strong {
   display: block;
   margin-bottom: 6px;

@@ -8,7 +8,7 @@ from app.core.models import EventType, StoreEvent
 from app.core.settings import Settings
 
 
-def generate_seed_events(settings: Settings, max_orders: int = 90) -> list[StoreEvent]:
+def generate_seed_events(settings: Settings, max_orders: int | None = None) -> list[StoreEvent]:
     """Create deterministic review data from POS rows when videos are not staged.
 
     This is deliberately tied to the supplied CSV, so changing the input changes the
@@ -36,7 +36,7 @@ def generate_seed_events(settings: Settings, max_orders: int = 90) -> list[Store
             if not order_id or order_id in seen_orders:
                 continue
             seen_orders.add(order_id)
-            if len(seen_orders) > max_orders:
+            if max_orders is not None and len(seen_orders) > max_orders:
                 break
 
             ts = datetime.strptime(f"{row.get('order_date')} {row.get('order_time')}", "%d-%m-%Y %H:%M:%S")

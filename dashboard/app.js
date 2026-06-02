@@ -50,13 +50,13 @@ function renderMetrics(metrics, insights) {
     metricCard("Visitors", metrics.visitors, `${metrics.active_sessions} active sessions`, colors[0]),
     metricCard("Orders", metrics.billed_orders, `${insights.transactions.rows} POS rows parsed`, colors[1]),
     metricCard("Conversion", metrics.conversion_rate * 100, "POS orders / unique visitors", colors[2], "percent"),
-    metricCard("Revenue", metrics.revenue, "From Brigade_Bangalore CSV", colors[3], "currency"),
+    metricCard("Revenue", metrics.revenue, `From ${insights.store.name} CSV`, colors[3], "currency"),
     metricCard("Avg dwell", metrics.avg_dwell_minutes, "Entry to exit session time", colors[4], "decimal"),
   ].join("");
   hydrateKpis();
   document.getElementById("confidence-score").textContent = `${Math.round(Math.min(0.97, metrics.conversion_rate + 0.08) * 100)}%`;
   document.getElementById("event-count").textContent = metrics.generated_from.events;
-  document.getElementById("camera-count").textContent = insights.cameras.length;
+  document.getElementById("camera-count").textContent = insights.layout.cameras.length;
   document.getElementById("conversion-pill").textContent = `${Math.round(metrics.conversion_rate * 100)}% conversion`;
 }
 
@@ -114,8 +114,8 @@ function renderRanks(targetId, data) {
     .join("");
 }
 
-function renderDepartmentDonut(departmentMix) {
-  const entries = Object.entries(departmentMix).slice(0, 5);
+function renderBrandDonut(brandMix) {
+  const entries = Object.entries(brandMix).slice(0, 5);
   const total = entries.reduce((sum, [, count]) => sum + count, 0) || 1;
   let cursor = 0;
   const stops = entries.map(([, count], idx) => {
@@ -124,7 +124,7 @@ function renderDepartmentDonut(departmentMix) {
     return `${colors[idx % colors.length]} ${start}% ${cursor}%`;
   });
   document.getElementById("dept-donut").style.background = `conic-gradient(${stops.join(",")})`;
-  renderRanks("dept-list", departmentMix);
+  renderRanks("dept-list", brandMix);
 }
 
 function renderEvents() {
@@ -154,15 +154,17 @@ function renderReadiness(evaluation) {
 }
 
 function renderResources(insights) {
-  const resources = [
-    ["CCTV zip", `${insights.cameras.length} extracted MP4 feeds used for detector tests`],
-    ["Store layout XLSX", insights.layout.available ? "Embedded layout image extracted and displayed" : "Missing"],
-    ["POS CSV", `${insights.transactions.rows} rows, ${insights.transactions.orders} unique orders`],
-    ["Evaluation PDF", `${insights.evaluation.scoring.length} scoring areas mapped into readiness panel`],
-  ];
-  document.getElementById("resource-strip").innerHTML = resources
-    .map(([name, detail]) => `<div class="resource-item"><strong>${name}</strong><span>${detail}</span></div>`)
+  const storeCards = (insights.layout.stores || [])
+    .map(
+      (store) => `<div class="resource-item"><strong>${store.store}</strong><span>${store.camera_count} cameras · ${store.layout_count} layout image(s)</span></div>`,
+    )
     .join("");
+  document.getElementById("resource-strip").innerHTML = [
+    `<div class="resource-item resource-stack"><strong>Store packages</strong><div class="resource-stack">${storeCards || "<em>No store archives detected</em>"}</div></div>`,
+    `<div class="resource-item"><strong>CCTV clips</strong><span>${insights.layout.cameras.length} camera feed(s) available in the active package</span></div>`,
+    `<div class="resource-item"><strong>POS CSV</strong><span>${insights.transactions.rows} rows, ${insights.transactions.orders} unique orders</span></div>`,
+    `<div class="resource-item"><strong>Evaluation PDF</strong><span>${insights.evaluation.scoring.length} scoring areas mapped into readiness panel</span></div>`,
+  ].join("");
 }
 
 function wireFilters() {
@@ -189,9 +191,9 @@ async function refresh() {
   renderMetrics(metrics, insights);
   renderFunnel(funnel);
   renderAnomalies(anomalyPayload.anomalies);
-  renderCameras(insights.cameras);
+  renderCameras(insights.layout.cameras);
   renderHourly(insights.transactions.hourly_orders);
-  renderDepartmentDonut(insights.transactions.department_mix);
+  renderBrandDonut(insights.transactions.brand_mix);
   renderRanks("brand-list", insights.transactions.brand_mix);
   renderEvents();
   renderReadiness(insights.evaluation);

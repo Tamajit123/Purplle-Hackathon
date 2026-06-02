@@ -12,7 +12,7 @@ from app.services.seeding import generate_seed_events
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--if-empty", action="store_true", help="Do not append when events already exist")
-    parser.add_argument("--max-orders", type=int, default=90)
+    parser.add_argument("--max-orders", type=int, default=999999)
     args = parser.parse_args()
 
     settings = get_settings()

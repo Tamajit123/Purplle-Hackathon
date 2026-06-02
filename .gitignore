@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 data/events/*.jsonl
 data/cctv/
+data/Store *.zip
 *.log
 dashboard_smoke.png
 

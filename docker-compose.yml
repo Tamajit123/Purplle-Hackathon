@@ -7,7 +7,7 @@ services:
       STORE_ID: ST1008
       STORE_NAME: Brigade_Bangalore
       EVENT_LOG_PATH: /app/data/events/events.jsonl
-      TRANSACTION_CSV_PATH: /app/data/transactions.csv
+      TRANSACTION_CSV_PATH: /app/data/POS_transactions.csv
     volumes:
       - ./data:/app/data
     command: >

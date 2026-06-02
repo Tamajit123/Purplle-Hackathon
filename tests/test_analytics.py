@@ -23,7 +23,7 @@ def test_metrics_are_session_based():
         event(EventType.EXIT, "a", 12),
         event(EventType.ENTRY, "b", 1),
     ]
-    tx = TransactionStats(row_count=1, order_count=1, revenue=250.0, hourly_orders={10: 1}, department_mix={}, brand_mix={}, salesperson_mix={})
+    tx = TransactionStats(row_count=1, order_count=1, revenue=250.0, hourly_orders={10: 1}, brand_mix={}, store_mix={})
     metrics = compute_metrics(events, tx, Settings())
     assert metrics.visitors == 2
     assert metrics.exits == 1
@@ -39,7 +39,7 @@ def test_funnel_uses_detected_zone_and_pos_orders():
         event(EventType.CHECKOUT, "a", 8, "billing_counter"),
         event(EventType.ENTRY, "b", 1),
     ]
-    tx = TransactionStats(row_count=3, order_count=3, revenue=1000.0, hourly_orders={}, department_mix={}, brand_mix={}, salesperson_mix={})
+    tx = TransactionStats(row_count=3, order_count=3, revenue=1000.0, hourly_orders={}, brand_mix={}, store_mix={})
     funnel = compute_funnel(events, tx)
     assert funnel["stages"][0]["count"] == 2
     assert funnel["stages"][1]["count"] == 1

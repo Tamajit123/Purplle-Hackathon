@@ -1,4 +1,5 @@
 from pathlib import Path
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Query
 from fastapi.responses import FileResponse
@@ -15,14 +16,15 @@ from app.services.video_pipeline import MotionLineCounter
 settings = get_settings()
 store = EventStore(settings.event_log_path)
 
-app = FastAPI(title="Store Intelligence System", version="0.1.0")
-app.mount("/dashboard", StaticFiles(directory="dashboard"), name="dashboard")
-
-
-@app.on_event("startup")
-def ensure_initial_events() -> None:
+@asynccontextmanager
+async def lifespan(_: FastAPI):
     if store.count() == 0:
         store.append_many(generate_seed_events(settings))
+    yield
+
+
+app = FastAPI(title="Store Intelligence System", version="0.1.0", lifespan=lifespan)
+app.mount("/dashboard", StaticFiles(directory="dashboard"), name="dashboard")
 
 
 @app.get("/")
@@ -37,7 +39,7 @@ def health() -> dict:
 
 @app.get("/metrics")
 def metrics() -> dict:
-    return compute_metrics(store.all(), load_transaction_stats(settings.transaction_csv_path), settings).dict()
+    return compute_metrics(store.all(), load_transaction_stats(settings.transaction_csv_path), settings).model_dump()
 
 
 @app.get("/funnel")
@@ -61,7 +63,7 @@ def insights() -> dict:
 
 
 @app.post("/ingest/seed")
-def ingest_seed(max_orders: int = Query(90, ge=1, le=500)) -> dict:
+def ingest_seed(max_orders: int = Query(999999, ge=1, le=999999)) -> dict:
     generated = generate_seed_events(settings, max_orders=max_orders)
     return {"written": store.append_many(generated)}
 
