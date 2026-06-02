@@ -16,8 +16,6 @@ COPY app ./app
 COPY scripts ./scripts
 COPY dashboard ./dashboard
 COPY config ./config
-COPY ["data/Store 1.zip", "./data/Store 1.zip"]
-COPY ["data/Store 2.zip", "./data/Store 2.zip"]
 COPY data/POS_transactions.csv ./data/POS_transactions.csv
 COPY data/evaluation_framework.pdf ./data/evaluation_framework.pdf
 RUN mkdir -p ./data/events
