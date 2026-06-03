@@ -15,6 +15,7 @@ def _rounded(value: float) -> float:
 def compute_metrics(events: list[StoreEvent], tx: TransactionStats, settings: Settings) -> MetricSummary:
     entries = [e for e in events if e.event_type == EventType.ENTRY]
     exits = [e for e in events if e.event_type == EventType.EXIT]
+    checkouts = [e for e in events if e.event_type == EventType.CHECKOUT]
     anomalies = [e for e in events if e.event_type == EventType.ANOMALY]
     tracks = defaultdict(dict)
     for event in events:
@@ -28,7 +29,8 @@ def compute_metrics(events: list[StoreEvent], tx: TransactionStats, settings: Se
 
     visitors = len({event.track_id for event in entries})
     active = max(visitors - len(exits), 0)
-    conversion = tx.order_count / visitors if visitors else 0
+    checkout_count = len({event.track_id for event in checkouts})
+    conversion = checkout_count / visitors if visitors else 0
     return MetricSummary(
         store_id=settings.store_id,
         visitors=visitors,
@@ -42,9 +44,10 @@ def compute_metrics(events: list[StoreEvent], tx: TransactionStats, settings: Se
         generated_from={
             "events": len(events),
             "raw_event_visitors": visitors,
+            "checkout_tracks": checkout_count,
             "pos_orders": tx.order_count,
             "transaction_rows_present": tx.order_count > 0,
-            "assumption": "Visitors are unique CCTV entry tracks from the provided sample_events file; conversion is the raw order-to-visitor ratio.",
+            "assumption": "Visitors come from CCTV entry tracks and conversion is the detected checkout-to-visitor ratio from seeded store events.",
         },
     )
 
@@ -55,8 +58,7 @@ def compute_funnel(events: list[StoreEvent], tx: TransactionStats) -> dict:
     checkout_tracks = {e.track_id for e in events if e.event_type == EventType.CHECKOUT}
     visitors = len(entry_tracks)
     zone_visits = len(beauty_tracks)
-    checkout_signal = max(len(checkout_tracks), tx.order_count)
-    checkout_visits = min(checkout_signal, zone_visits) if zone_visits else min(checkout_signal, visitors)
+    checkout_visits = min(len(checkout_tracks), zone_visits) if zone_visits else min(len(checkout_tracks), visitors)
     return {
         "stages": [
             {"name": "entered_store", "count": visitors, "rate_from_previous": 1.0 if visitors else 0},
@@ -74,7 +76,7 @@ def compute_funnel(events: list[StoreEvent], tx: TransactionStats) -> dict:
         "evidence": {
             "detected_checkout_tracks": len(checkout_tracks),
             "pos_orders": tx.order_count,
-            "display_rule": "Funnel display is capped to preserve drop-off shape; /metrics uses POS orders for conversion.",
+            "display_rule": "Funnel display is driven by seeded CCTV checkout tracks; POS orders remain available as revenue evidence.",
         },
     }
 

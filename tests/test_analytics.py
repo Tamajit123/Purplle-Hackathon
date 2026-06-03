@@ -21,6 +21,7 @@ def test_metrics_are_session_based():
     events = [
         event(EventType.ENTRY, "a"),
         event(EventType.ZONE_ENTER, "a", 2, "beauty_wall"),
+        event(EventType.CHECKOUT, "a", 8, "billing_counter"),
         event(EventType.EXIT, "a", 12),
         event(EventType.ENTRY, "b", 1),
     ]
@@ -49,12 +50,13 @@ def test_funnel_uses_detected_zone_and_pos_orders():
 
 
 def test_metrics_use_raw_visitor_count():
-    events = [event(EventType.ENTRY, "a")]
+    events = [event(EventType.ENTRY, "a"), event(EventType.CHECKOUT, "a", 3, "billing_counter")]
     tx = TransactionStats(row_count=3, order_count=3, revenue=1000.0, hourly_orders={}, brand_mix={}, store_mix={})
     metrics = compute_metrics(events, tx, Settings())
     assert metrics.visitors == 1
-    assert metrics.conversion_rate == 3.0
+    assert metrics.conversion_rate == 1.0
     assert metrics.generated_from["raw_event_visitors"] == 1
+    assert metrics.generated_from["checkout_tracks"] == 1
 
 
 def test_sample_events_file_normalizes_to_store_events():

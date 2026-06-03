@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 data/events/*.jsonl
 data/cctv/
+data/stores/
 data/*.zip
 data/Store *.zip
 *.zip

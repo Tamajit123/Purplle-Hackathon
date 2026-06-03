@@ -48,8 +48,6 @@ function hydrateKpis() {
     const formatter =
       format === "percent"
         ? (v) => `${Math.round(v * 100)}%`
-        : format === "ratio"
-          ? (v) => `${Number(v).toFixed(1)}x`
         : format === "currency"
           ? (v) => formatCurrency(v)
           : format === "decimal"
@@ -65,7 +63,7 @@ function renderMetrics(metrics, insights) {
   document.getElementById("metrics").innerHTML = [
     metricCard("Visitors", metrics.visitors, `${metrics.active_sessions} active sessions`, colors[0]),
     metricCard("Orders", metrics.billed_orders, `${insights.transactions.rows} POS rows parsed`, colors[1]),
-    metricCard("Order ratio", metrics.conversion_rate, "POS orders / unique visitors", colors[2], "ratio"),
+    metricCard("Conversion", metrics.conversion_rate, "Detected checkout events / visitors", colors[2], "percent"),
     metricCard("Revenue", metrics.revenue, "Reconciled from POS transactions", colors[3], "currency"),
     metricCard("Stores mapped", stores.length, `${cameraTotal} camera viewpoints configured`, colors[4]),
   ].join("");
@@ -74,7 +72,7 @@ function renderMetrics(metrics, insights) {
   document.getElementById("event-count").textContent = metrics.generated_from.events;
   document.getElementById("camera-count").textContent = cameraTotal;
   document.getElementById("resource-count").textContent = `${stores.length}+`;
-  document.getElementById("conversion-pill").textContent = `${Number(metrics.conversion_rate).toFixed(1)}x order ratio`;
+  document.getElementById("conversion-pill").textContent = `${Math.round(metrics.conversion_rate * 100)}% conversion`;
 }
 
 function renderStoreControls() {
