@@ -237,7 +237,18 @@ function renderBrandDonut(brandMix) {
     return `${colors[idx % colors.length]} ${start}% ${cursor}%`;
   });
   document.getElementById("dept-donut").style.background = `conic-gradient(${stops.join(",")})`;
-  renderRanks("dept-list", brandMix);
+  document.getElementById("dept-list").innerHTML = entries
+    .map(([name, count], idx) => {
+      const pct = Math.round((count / total) * 100);
+      return `<div class="rank-item share-item">
+        <div class="share-label">
+          <span class="share-swatch" style="background:${colors[idx % colors.length]}"></span>
+          <strong>${name}</strong>
+        </div>
+        <span class="share-value">${pct}% · ${count}</span>
+      </div>`;
+    })
+    .join("");
 }
 
 function renderEvents() {

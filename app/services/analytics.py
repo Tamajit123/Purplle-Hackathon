@@ -26,8 +26,9 @@ def compute_metrics(events: list[StoreEvent], tx: TransactionStats, settings: Se
         if "entry" in track and "exit" in track and track["exit"] >= track["entry"]:
             dwell_minutes.append((track["exit"] - track["entry"]).total_seconds() / 60)
 
-    active = max(len(entries) - len(exits), 0)
-    visitors = len({event.track_id for event in entries})
+    raw_visitors = len({event.track_id for event in entries})
+    active = max(raw_visitors - len(exits), 0)
+    visitors = max(raw_visitors, tx.order_count)
     conversion = tx.order_count / visitors if visitors else 0
     return MetricSummary(
         store_id=settings.store_id,
@@ -41,8 +42,10 @@ def compute_metrics(events: list[StoreEvent], tx: TransactionStats, settings: Se
         anomalies=len(anomalies),
         generated_from={
             "events": len(events),
+            "raw_event_visitors": raw_visitors,
+            "pos_orders": tx.order_count,
             "transaction_rows_present": tx.order_count > 0,
-            "assumption": "Visitors are unique entry tracks; orders come from POS CSV.",
+            "assumption": "Visitors are aligned to the larger of CCTV entry tracks and POS orders to avoid impossible conversion spikes from partial stream ingestion.",
         },
     )
 
@@ -51,7 +54,7 @@ def compute_funnel(events: list[StoreEvent], tx: TransactionStats) -> dict:
     entry_tracks = {e.track_id for e in events if e.event_type == EventType.ENTRY}
     beauty_tracks = {e.track_id for e in events if e.event_type == EventType.ZONE_ENTER and e.zone_id == "beauty_wall"}
     checkout_tracks = {e.track_id for e in events if e.event_type == EventType.CHECKOUT}
-    visitors = len(entry_tracks)
+    visitors = max(len(entry_tracks), tx.order_count)
     zone_visits = len(beauty_tracks)
     checkout_signal = max(len(checkout_tracks), tx.order_count)
     checkout_visits = min(checkout_signal, zone_visits) if zone_visits else min(checkout_signal, visitors)

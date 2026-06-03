@@ -714,6 +714,29 @@ h2 {
   gap: 10px;
 }
 
+.share-item {
+  align-items: center;
+}
+
+.share-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.share-swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.share-value {
+  color: var(--plum);
+  font-weight: 900;
+}
+
 .brand-list .rank-item strong {
   color: var(--plum);
 }
