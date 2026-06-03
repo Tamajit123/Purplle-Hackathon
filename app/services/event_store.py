@@ -28,6 +28,13 @@ class EventStore:
                     f.write(event.json() + "\n")
         return len(events)
 
+    def overwrite_many(self, events: list[StoreEvent]) -> int:
+        with self._lock:
+            with self.path.open("w", encoding="utf-8") as f:
+                for event in events:
+                    f.write(event.json() + "\n")
+        return len(events)
+
     def all(self, limit: int | None = None) -> list[StoreEvent]:
         if not self.path.exists():
             return []

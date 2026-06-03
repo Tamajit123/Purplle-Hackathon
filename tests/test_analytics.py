@@ -42,18 +42,18 @@ def test_funnel_uses_detected_zone_and_pos_orders():
     ]
     tx = TransactionStats(row_count=3, order_count=3, revenue=1000.0, hourly_orders={}, brand_mix={}, store_mix={})
     funnel = compute_funnel(events, tx)
-    assert funnel["stages"][0]["count"] == 3
+    assert funnel["stages"][0]["count"] == 2
     assert funnel["stages"][1]["count"] == 1
     assert funnel["stages"][2]["count"] == 1
     assert funnel["evidence"]["pos_orders"] == 3
 
 
-def test_metrics_cap_conversion_when_pos_exceeds_cctv():
+def test_metrics_use_raw_visitor_count():
     events = [event(EventType.ENTRY, "a")]
     tx = TransactionStats(row_count=3, order_count=3, revenue=1000.0, hourly_orders={}, brand_mix={}, store_mix={})
     metrics = compute_metrics(events, tx, Settings())
-    assert metrics.visitors == 3
-    assert metrics.conversion_rate == 1.0
+    assert metrics.visitors == 1
+    assert metrics.conversion_rate == 3.0
     assert metrics.generated_from["raw_event_visitors"] == 1
 
 

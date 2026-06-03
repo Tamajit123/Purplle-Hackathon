@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from app.core.settings import get_settings
 from app.services.analytics import compute_funnel, compute_metrics, detect_business_anomalies
 from app.services.event_store import EventStore
-from app.services.seeding import generate_seed_events
+from app.services.seeding import generate_seed_events, load_sample_events
 from app.services.resources import resource_summary
 from app.services.transactions import load_transaction_stats
 from app.services.video_pipeline import MotionLineCounter
@@ -18,7 +18,10 @@ store = EventStore(settings.event_log_path)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    if store.count() == 0:
+    sample_events = load_sample_events(settings)
+    if sample_events:
+        store.overwrite_many(sample_events)
+    elif store.count() == 0:
         store.append_many(generate_seed_events(settings))
     yield
 
